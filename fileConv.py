@@ -1,7 +1,7 @@
 import sys
 import subprocess
 # implement pip as a subprocess:
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', '<packagename>'])
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
 
 import pretty_midi
 
