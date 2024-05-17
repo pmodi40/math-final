@@ -8,5 +8,6 @@ import pretty_midi
 def genData(midiFile):
   # Made to unpack the following data points into a list of lists:
   # Note, Velocity, Tempo, Time
+  print("Stub")
 
   
