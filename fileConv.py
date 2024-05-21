@@ -20,7 +20,7 @@ def __init__(self, file):
       
 
 def genData(midiFile):
-  midi_data = pretty_midi.PrettyMidi(midiFile)
+  midi_data = pretty_midi.PrettyMIDI(midiFile)
   tempo = midi_data.estimate_tempo()
   notesCol = []
   """
