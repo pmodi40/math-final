@@ -4,19 +4,27 @@ import subprocess
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
 
 import pretty_midi
-
+import numpy as np
 # Create fields and constructor!
 
-markov = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-"""
-def __init__(self, file):
+markovNot = np.random.randint(0, size=(12,12))
+markovOct = np.random.randint(0, size=(7,7))
+lastNote = None
+
+def __init__(self, files):
   # Could always just pre-build the notes you take, exclude the rest for standardization
-  fullArr = genData(file)
-  allNotes = listDubInd(fullArr, 0)
+  allData = []
+  for i in files:
+    allData.append(genData(i))
+  allNotes = listTripInd(allData, 0)
+  allOctaves = listTripInd(allData, 1)
+  firstNote = allNotes[0]
+  for i in allNotes[1:]:
+    
+    
   
-  for i in allNotes
-"""
+
       
 
 def genData(midiFile):
@@ -29,16 +37,28 @@ def genData(midiFile):
   """
   for i in midi_data.instruments:
     for j in i.notes:
-      print(pretty_midi.note_number_to_name(j.pitch))
-      #notesCol.append([pretty_midi.note_number_to_name(j.pitch), j.pitch, j.velocity, j.get_duration(), i.name])
-  # Made to unpack the following data points into a list of lists:
-  # Note, Velocity, Tempo, Time
-  # return notesCol
+      note = pretty_midi.note_number_to_name(j.pitch)
+      octave = note[-1]
+      note = note[0:len(note) - 1]
+      if note[-1] == "!" or note[-1] == "b":
+        note = note[0]
+      notesCol.append([find(note, NotesList), octave])
+  return notesCol
+      
 
-def listDubInd(list, ind):
+
+def listTripInd(list, ind):
   arr = []
   for i in list:
-    arr.append(i[ind])
+      for j in I:
+        arr.append(j[ind])
   return arr
+
+def find(desid, within):
+  for i in range(0, len(within)):
+    if within[i] == desid:
+      return i
+  return None
+
 
 genData("bach.mid");
