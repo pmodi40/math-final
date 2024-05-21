@@ -41,4 +41,4 @@ def listDubInd(list, ind):
     arr.append(i[ind])
   return arr
 
-genData("");
+genData("bach.mid");
