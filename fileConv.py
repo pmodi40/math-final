@@ -2,13 +2,13 @@ import sys
 import subprocess
 import contextlib
 from os import walk
-# implement pip as a subprocess:
+
 with contextlib.redirect_stdout(None):
+  # implement pip as a subprocess:
   subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
 
 import pretty_midi
 import numpy as np
-# Create fields and constructor!
 
 NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 probVectorNot = np.zeros((12, 1))
@@ -137,8 +137,8 @@ def nextNorm(vectNot, vectOct, markovNot, markovOct):
   # print(nextVectOct)
   newNote = findLargestInd(nextVectNot)
   newOct = findLargestInd(nextVectOct)
-  probVectorNot = nextVectNot
-  probVectorOct = nextVectOct
+  global probVectorNot = nextVectNot
+  global probVectorOct = nextVectOct
   return [newNote, newOct]
 
 def noteListToMidi(midiFileName, notes):
