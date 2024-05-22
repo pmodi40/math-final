@@ -1,7 +1,9 @@
 import sys
 import subprocess
+import contextlib
 # implement pip as a subprocess:
-subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
+with contextlib.redirect_stdout(None):
+  subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
 
 import pretty_midi
 import numpy as np
