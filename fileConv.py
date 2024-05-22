@@ -10,7 +10,8 @@ import numpy as np
 # Create fields and constructor!
 
 NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-
+probVectorNot = np.zeros((12, 1))
+probVectorOct = np.zeros((8, 1))
 
 def markov(files):
   # Could always just pre-build the notes you take, exclude the rest for standardization
@@ -85,10 +86,33 @@ def chordMarkov(notes):
     chordMatr[minusOneNote + 12 * minusTwoNote][note] += 1
   return chordMatr
 
-def createMusNorm(startVect):
-    
-def nextNorm(probVector, markov):
-    # List composition ([note, velocity])
+def findLargestInd(vector):
+  largestCur = -1
+  largestInd = -1
+  for i in range(0. len(vector):
+    curEntry = vector[i][0]
+    if (curEntry > largestCur):
+      largestCur = curEntry
+      largestInd = i
+  return largestInd
+
+def createMusNorm(startNote, startOct, markovNot, markovOct):
+  probVectorNot[startNote] = 1
+  probVectorOct[startOct] = 1
+  noteList = [[startNote, startOct]]
+  for i in range(199):
+    noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
+  return noteList
+  
+def nextNorm(vectNot, vectOct, markovNot, markovOct):
+  # List composition ([note, velocity])
+  nextVectNot = np.matmul(markovNot, vectNot)
+  nextVectOct = np.matmul(markovOct, vectOct)
+  newNote = findLargestInd(nextVectNot)
+  newOct = findLargestInd(nextVectOct)
+  probVectorNot = nextVectNot
+  probVectorOct = nextVectOct
+  return [newNote, newOct]
 
 def createMusChord(startNote1, startNote2):
 
