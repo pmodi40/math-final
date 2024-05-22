@@ -13,6 +13,28 @@ NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 probVectorNot = np.zeros((12, 1))
 probVectorOct = np.zeros((8, 1))
 
+def collapse(dubList):
+    music = []
+    for i in dubList:
+        adder = i[0]
+        for j in range(1, len(i)):
+            music.append(adder + "/" + i[j])
+    return music
+
+musicList = []
+for (dir, dir_name, file) in walk("music"):
+    musicList.append([dir] + file)
+musicList = collapse(musicList)
+
+def createMusic(fileName, startNoteOct):
+  startOct = int(startNoteOct[-1])
+  startNot = startNoteOct[0:len(startNoteOct) - 1]
+  allMarkovs = markov(musicList)
+  markovNot = allMarkovs[0]
+  markovOct = allMarkovs[2]
+  allNotes = createMusNorm(startNot, startOct, markovNot, markovOct)
+  noteListToMidi(fileName, allNotes)
+
 def markov(files):
   # Could always just pre-build the notes you take, exclude the rest for standardization
   markovNot = np.zeros((12,12))
