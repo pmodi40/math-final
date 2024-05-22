@@ -142,7 +142,7 @@ def noteListToMidi(midiFileName, notes):
   harpsichordProgram = pretty_midi.instrument_name_to_program("Harpsichord")
   harpsichord = pretty_midi.Instrument(program=harpsichordProgram)
   for i in range(0, len(notes)):
-    accNote = str(pretty_midi.note_number_to_name(notes[i][0])) + str(notes[i][1])
+    accNote = str(NotesList[notes[i][0]]) + str(notes[i][1])
     pitchNum = pretty_midi.note_name_to_number(accNote)
     note = pretty_midi.Note(velocity=100, pitch = pitchNum, start = 0.5 * i, end = 0.5 * (i + 1))
     harpsichord.notes.append(note)
