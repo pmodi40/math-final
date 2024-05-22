@@ -8,6 +8,7 @@ with contextlib.redirect_stdout(None):
   subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
 
 import pretty_midi
+import random
 import numpy as np
 
 NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -87,6 +88,7 @@ def find(desid, within):
       return i
   return None
 
+
 def freqToMarkov(freq):
   rowPos = 0
   while rowPos < len(freq):
@@ -101,6 +103,7 @@ def freqToMarkov(freq):
     rowPos += 1
   return np.transpose(freq)
 
+
 def chordMarkov(notes):
   chordMatr = np.zeros((144, 12))
   for i in range(2, len(notes)):
@@ -110,6 +113,8 @@ def chordMarkov(notes):
     chordMatr[minusOneNote + 12 * minusTwoNote][note] += 1
   return chordMatr
 
+'''
+LEGACY CODE
 def findLargestInd(vector):
   largestCur = -1
   largestInd = -1
@@ -119,24 +124,32 @@ def findLargestInd(vector):
       largestCur = curEntry
       largestInd = i
   return largestInd
+'''
 
 def createMusNorm(startNote, startOct, markovNot, markovOct):
   probVectorNot[startNote] = 1
   probVectorOct[startOct] = 1
   noteList = [[startNote, startOct]]
   for i in range(199):
-    print(probVectorNot)
+    # print(probVectorNot)
     noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
   return noteList
-  
+
+def randomPickVector(vector):
+  randomNum = random.random()
+  for i in range(len(vector)):
+    randomNum -= vector[i][0]
+    if (randomNum <= 0):
+      return i
+
 def nextNorm(vectNot, vectOct, markovNot, markovOct):
   # List composition ([note, velocity])
   nextVectNot = np.matmul(markovNot, vectNot)
   # print(nextVectNot)
   nextVectOct = np.matmul(markovOct, vectOct)
   # print(nextVectOct)
-  newNote = findLargestInd(nextVectNot)
-  newOct = findLargestInd(nextVectOct)
+  newNote = randomPickVector(nextVectNot)
+  newOct = randomPickVector(nextVectOct)
   global probVectorNot
   probVectorNot = nextVectNot
   global probVectorOct
