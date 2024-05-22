@@ -111,7 +111,7 @@ def chordMarkov(notes):
 def findLargestInd(vector):
   largestCur = -1
   largestInd = -1
-  for i in range(0. len(vector):
+  for i in range(0, len(vector):
     curEntry = vector[i][0]
     if (curEntry > largestCur):
       largestCur = curEntry
