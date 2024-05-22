@@ -120,9 +120,9 @@ def findLargestInd(vector):
   return largestInd
 
 def createMusNorm(startNote, startOct, markovNot, markovOct):
-  probVectorNot[find(startNote, NotesList)] = 1
+  probVectorNot[startNote] = 1
   probVectorOct[startOct] = 1
-  noteList = [[find(startNote, NotesList), startOct]]
+  noteList = [startNote, startOct]]
   for i in range(199):
     noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
   return noteList
