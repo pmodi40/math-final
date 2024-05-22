@@ -114,7 +114,11 @@ def nextNorm(vectNot, vectOct, markovNot, markovOct):
   probVectorOct = nextVectOct
   return [newNote, newOct]
 
+def noteListToMidi(midiFileName, notes):
+  
+
 def createMusChord(startNote1, startNote2):
+
 
 def nextChord():
     
