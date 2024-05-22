@@ -1,6 +1,7 @@
 import sys
 import subprocess
 import contextlib
+from os import walk
 # implement pip as a subprocess:
 with contextlib.redirect_stdout(None):
   subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
