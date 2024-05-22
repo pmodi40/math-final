@@ -137,8 +137,10 @@ def nextNorm(vectNot, vectOct, markovNot, markovOct):
   # print(nextVectOct)
   newNote = findLargestInd(nextVectNot)
   newOct = findLargestInd(nextVectOct)
-  global probVectorNot = nextVectNot
-  global probVectorOct = nextVectOct
+  global probVectorNot
+  probVectorNot = nextVectNot
+  global probVectorOct
+  probVectorOct = nextVectOct
   return [newNote, newOct]
 
 def noteListToMidi(midiFileName, notes):
