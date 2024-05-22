@@ -29,12 +29,9 @@ def markov(files):
     markovOct[firstOct][i] += 1
     firstOct = i
   markovNot = freqToMarkov(markovNot)
+  markovChord = freqToMarkov(chordMarkov(allNotes))
   markovOct = freqToMarkov(markovOct)
-  return [markovNot, markovOct]
-    
-  
-
-      
+  return [markovNot, markovChord, markovOct]  
 
 def genData(midiFile):
   midi_data = pretty_midi.PrettyMIDI(midiFile)
@@ -50,8 +47,6 @@ def genData(midiFile):
       notesCol.append([find(note, NotesList), int(octave)])
   return notesCol
       
-
-
 def listTripInd(list, ind):
   arr = []
   for i in list:
@@ -78,3 +73,13 @@ def freqToMarkov(freq):
         freq[rowPos][i] = 0
     rowPos += 1
   return freq
+
+def chordMarkov(notes):
+  chordMatr = np.zeros((144, 12))
+  for i in range(2, len(notes)):
+    minusTwoNote = notes[i-2]
+    minusOneNote = notes[i-1]
+    note = notes[i]
+    chordMatr[minusOneNote + 12 * minusTwoNote][note] += 1
+  return chordMatr
+    
