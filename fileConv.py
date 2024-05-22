@@ -34,7 +34,7 @@ def createMusic(fileName, startNoteOct):
   markovNot = allMarkovs[0]
   markovOct = allMarkovs[2]
   allNotes = createMusNorm(startNot, startOct, markovNot, markovOct)
-  print(allNotes)
+  # print(allNotes)
   noteListToMidi(fileName, allNotes)
 
 def markov(files):
@@ -131,7 +131,9 @@ def createMusNorm(startNote, startOct, markovNot, markovOct):
 def nextNorm(vectNot, vectOct, markovNot, markovOct):
   # List composition ([note, velocity])
   nextVectNot = np.matmul(markovNot, vectNot)
+  print(nextVectNot)
   nextVectOct = np.matmul(markovOct, vectOct)
+  print(nextVectOct)
   newNote = findLargestInd(nextVectNot)
   newOct = findLargestInd(nextVectOct)
   probVectorNot = nextVectNot
