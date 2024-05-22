@@ -99,7 +99,7 @@ def freqToMarkov(freq):
       else:
         freq[rowPos][i] = 0
     rowPos += 1
-  return freq
+  return np.transpose(freq)
 
 def chordMarkov(notes):
   chordMatr = np.zeros((144, 12))
