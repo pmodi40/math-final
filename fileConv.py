@@ -29,7 +29,7 @@ musicList = collapse(musicList)
 
 def createMusic(fileName, startNoteOct):
   startOct = int(startNoteOct[-1])
-  startNot = find([0:len(startNoteOct) - 1], NotesList)
+  startNot = find(startNoteOct[0:len(startNoteOct) - 1], NotesList)
   allMarkovs = markov(musicList)
   markovNot = allMarkovs[0]
   markovOct = allMarkovs[2]
