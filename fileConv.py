@@ -29,7 +29,7 @@ musicList = collapse(musicList)
 
 def createMusic(fileName, startNoteOct):
   startOct = int(startNoteOct[-1])
-  startNot = startNoteOct[0:len(startNoteOct) - 1]
+  startNot = find([0:len(startNoteOct) - 1], NotesList)
   allMarkovs = markov(musicList)
   markovNot = allMarkovs[0]
   markovOct = allMarkovs[2]
@@ -122,7 +122,7 @@ def findLargestInd(vector):
 def createMusNorm(startNote, startOct, markovNot, markovOct):
   probVectorNot[find(startNote, NotesList)] = 1
   probVectorOct[startOct] = 1
-  noteList = [[startNote, startOct]]
+  noteList = [[find(startNote, NotesList), startOct]]
   for i in range(199):
     noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
   return noteList
@@ -142,7 +142,7 @@ def noteListToMidi(midiFileName, notes):
   harpsichordProgram = pretty_midi.instrument_name_to_program("Harpsichord")
   harpsichord = pretty_midi.Instrument(program=harpsichordProgram)
   for i in range(0, len(notes)):
-    accNote = str(notes[i][0]) + str(notes[i][1])
+    accNote = str(pretty_midi.note_number_to_name(notes[i][0])) + str(notes[i][1])
     pitchNum = pretty_midi.note_name_to_number(accNote)
     note = pretty_midi.Note(velocity=100, pitch = pitchNum, start = 0.5 * i, end = 0.5 * (i + 1))
     harpsichord.notes.append(note)
