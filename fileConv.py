@@ -125,15 +125,16 @@ def createMusNorm(startNote, startOct, markovNot, markovOct):
   probVectorOct[startOct] = 1
   noteList = [[startNote, startOct]]
   for i in range(199):
+    print(probVectorNot)
     noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
   return noteList
   
 def nextNorm(vectNot, vectOct, markovNot, markovOct):
   # List composition ([note, velocity])
   nextVectNot = np.matmul(markovNot, vectNot)
-  print(nextVectNot)
+  # print(nextVectNot)
   nextVectOct = np.matmul(markovOct, vectOct)
-  print(nextVectOct)
+  # print(nextVectOct)
   newNote = findLargestInd(nextVectNot)
   newOct = findLargestInd(nextVectOct)
   probVectorNot = nextVectNot
