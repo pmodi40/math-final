@@ -8,12 +8,12 @@ import numpy as np
 # Create fields and constructor!
 
 NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-markovNot = np.random.randint(0, size=(12,12))
-markovOct = np.random.randint(0, size=(7,7))
-lastNote = None
 
-def __init__(self, files):
+
+def markov(files):
   # Could always just pre-build the notes you take, exclude the rest for standardization
+  markovNot = np.zeros((12,12))
+  markovOct = np.zeros((7,7))
   allData = []
   for i in files:
     allData.append(genData(i))
@@ -21,7 +21,16 @@ def __init__(self, files):
   allOctaves = listTripInd(allData, 1)
   firstNote = allNotes[0]
   for i in allNotes[1:]:
-    
+    markovNot[firstNote][i] += 1
+    firstNote = i
+  firstOct = allOctaves[0]
+  for i in allOctaves[1:]:
+    # print([firstOct, i])
+    markovOct[firstOct][i] += 1
+    firstOct = i
+  markovNot = freqToMarkov(markovNot)
+  markovOct = freqToMarkov(markovOct)
+  return [markovNot, markovOct]
     
   
 
@@ -31,18 +40,15 @@ def genData(midiFile):
   midi_data = pretty_midi.PrettyMIDI(midiFile)
   tempo = midi_data.estimate_tempo()
   notesCol = []
-  """
-  General Structure:
-  [Note *Name*, Note *Number*, Velocity, Duration, Instrument]
-  """
   for i in midi_data.instruments:
     for j in i.notes:
       note = pretty_midi.note_number_to_name(j.pitch)
       octave = note[-1]
+      # print(octave)
       note = note[0:len(note) - 1]
       if note[-1] == "!" or note[-1] == "b":
         note = note[0]
-      notesCol.append([find(note, NotesList), octave])
+      notesCol.append([find(note, NotesList), int(octave)])
   return notesCol
       
 
@@ -50,7 +56,7 @@ def genData(midiFile):
 def listTripInd(list, ind):
   arr = []
   for i in list:
-      for j in I:
+      for j in i:
         arr.append(j[ind])
   return arr
 
@@ -60,5 +66,17 @@ def find(desid, within):
       return i
   return None
 
-
-genData("bach.mid");
+def freqToMarkov(freq):
+  rowPos = 0
+  while rowPos < len(freq):
+    sum = 0
+    for i in freq[rowPos]:
+      sum += i
+    for i in range(0, len(freq[rowPos])):
+      # print(freq[rowPos][i] / sum)
+      if sum != 0:
+        freq[rowPos][i] = freq[rowPos][i] / sum
+      else:
+        freq[rowPos][i] = 0
+    rowPos += 1
+  return freq
