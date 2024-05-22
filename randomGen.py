@@ -1,8 +1,20 @@
 import fileConv
+from os import walk
+
+def collapse(dubList):
+    music = []
+    for i in dubList:
+        adder = i[0]
+        for j in range(1, len(i)):
+            music.append(adder + "/" + i[j])
+    return music
 
 musicList = []
-for i in range(772, 818):
-    musicList.append("music/bwv" + str(i) + ".mid")
+for (dir, dir_name, file) in walk("music"):
+    musicList.append([dir] + file)
+musicList = collapse(musicList)
 
-hi = fileConv.markov(musicList)[1]
+
+
+hi = fileConv.markov(musicList)[0]
 print(hi)

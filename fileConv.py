@@ -13,7 +13,7 @@ NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 def markov(files):
   # Could always just pre-build the notes you take, exclude the rest for standardization
   markovNot = np.zeros((12,12))
-  markovOct = np.zeros((7,7))
+  markovOct = np.zeros((8,8))
   allData = []
   for i in files:
     allData.append(genData(i))
@@ -44,7 +44,6 @@ def genData(midiFile):
     for j in i.notes:
       note = pretty_midi.note_number_to_name(j.pitch)
       octave = note[-1]
-      # print(octave)
       note = note[0:len(note) - 1]
       if note[-1] == "!" or note[-1] == "b":
         note = note[0]
@@ -73,7 +72,6 @@ def freqToMarkov(freq):
     for i in freq[rowPos]:
       sum += i
     for i in range(0, len(freq[rowPos])):
-      # print(freq[rowPos][i] / sum)
       if sum != 0:
         freq[rowPos][i] = freq[rowPos][i] / sum
       else:
