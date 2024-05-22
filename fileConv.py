@@ -115,10 +115,19 @@ def nextNorm(vectNot, vectOct, markovNot, markovOct):
   return [newNote, newOct]
 
 def noteListToMidi(midiFileName, notes):
-  
+  newMidi = pretty_midi.PrettyMIDI()
+  harpsichordProgram = pretty_midi.instrument_name_to_program("Harpsichord")
+  harpsichord = pretty_midi.Instrument(program=harpsichordProgram)
+  for i in range(0, len(notes)):
+    accNote = str(notes[i][0]) + str(notes[i][1])
+    pitchNum = pretty_midi.note_name_to_number(accNote)
+    note = pretty_midi.Note(velocity=100, pitch = pitchNum, start = 0.5 * i, end = 0.5 * (i + 1))
+    harpsichord.notes.append(note)
+  newMidi.instruments.append(harpsichord)
+  newMidi.write(midiFileName)
 
 def createMusChord(startNote1, startNote2):
-
+  return None
 
 def nextChord():
-    
+    return None
