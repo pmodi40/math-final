@@ -34,6 +34,7 @@ def createMusic(fileName, startNoteOct):
   markovNot = allMarkovs[0]
   markovOct = allMarkovs[2]
   allNotes = createMusNorm(startNot, startOct, markovNot, markovOct)
+  print(allNotes)
   noteListToMidi(fileName, allNotes)
 
 def markov(files):
