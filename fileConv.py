@@ -82,4 +82,13 @@ def chordMarkov(notes):
     note = notes[i]
     chordMatr[minusOneNote + 12 * minusTwoNote][note] += 1
   return chordMatr
+
+  def createMusNorm(startVect):
+    
+  def nextNorm(probVector, markov):
+    # List composition ([note, velocity])
+
+  def createMusChord(startNote1, startNote2):
+
+  def nextChord():
     
