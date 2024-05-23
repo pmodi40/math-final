@@ -1,7 +1,7 @@
 import sys
 import subprocess
 import contextlib
-from os import walk
+import os
 
 with contextlib.redirect_stdout(None):
   # implement pip as a subprocess:
@@ -26,7 +26,7 @@ def collapse(dubList):
     return music
 
 musicList = []
-for (dir, dir_name, file) in walk("music"):
+for (dir, dir_name, file) in os.walk("music"):
     musicList.append([dir] + file)
 musicList = collapse(musicList)
 
@@ -38,7 +38,7 @@ def createNormMusic(fileName, startNoteOct):
   markovOct = allMarkovs[2]
   allNotes = createMusNorm(startNot, startOct, markovNot, markovOct)
   # print(allNotes)
-  noteListToMidi(fileName, allNotes)
+  noteListToMidi(fileName + ".mid", allNotes)
 
 def createChordMusic(fileName, startNoteOct1, startNoteOct2):
   startOct1 = int(startNoteOct1[-1])
@@ -49,7 +49,7 @@ def createChordMusic(fileName, startNoteOct1, startNoteOct2):
   markovChordNot = allMarkovs[1]
   markovChordOct = allMarkovs[3]
   allNotes = createMusChord(startNot1, startNot2, startOct1, startOct2, markovChordNot, markovChordOct)
-  noteListToMidi(fileName, allNotes)
+  noteListToMidi(fileName + ".mid", allNotes)
 
 def markov(files):
   # Could always just pre-build the notes you take, exclude the rest for standardization
