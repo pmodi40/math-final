@@ -14,6 +14,8 @@ import numpy as np
 NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 probVectorNot = np.zeros((12, 1))
 probVectorOct = np.zeros((8, 1))
+probVectorChordNot = np.zeros((144, 1))
+probVectorChordOct = np.zeros((64, 1))
 
 def collapse(dubList):
     music = []
@@ -28,7 +30,7 @@ for (dir, dir_name, file) in walk("music"):
     musicList.append([dir] + file)
 musicList = collapse(musicList)
 
-def createMusic(fileName, startNoteOct):
+def createNormMusic(fileName, startNoteOct):
   startOct = int(startNoteOct[-1])
   startNot = find(startNoteOct[0:len(startNoteOct) - 1], NotesList)
   allMarkovs = markov(musicList)
@@ -36,6 +38,17 @@ def createMusic(fileName, startNoteOct):
   markovOct = allMarkovs[2]
   allNotes = createMusNorm(startNot, startOct, markovNot, markovOct)
   # print(allNotes)
+  noteListToMidi(fileName, allNotes)
+
+def createChordMusic(fileName, startNoteOct1, startNoteOct2):
+  startOct1 = int(startNoteOct1[-1])
+  startNot1 = find(startNoteOct1[0:len(startNoteOct1) - 1], NotesList)
+  startOct2 = int(startNoteOct2[-1])
+  startNot2 = find(startNoteOct2[0:len(startNoteOct2) - 1], NotesList)
+  allMarkovs = markov(musicList)
+  markovChordNot = allMarkovs[1]
+  markovChordOct = allMarkovs[3]
+  allNotes = createMusChord(startNot1, startNot2, startOct1, startOct2, markovChordNot, markovChordOct)
   noteListToMidi(fileName, allNotes)
 
 def markov(files):
@@ -58,8 +71,9 @@ def markov(files):
     firstOct = i
   markovNot = freqToMarkov(markovNot)
   markovChord = freqToMarkov(chordMarkov(allNotes))
+  markovChordOctave = freqToMarkov(chordOctaveMarkov(allOctaves))
   markovOct = freqToMarkov(markovOct)
-  return [markovNot, markovChord, markovOct]  
+  return [markovNot, markovChord, markovOct, markovChordOctave]  
 
 def genData(midiFile):
   midi_data = pretty_midi.PrettyMIDI(midiFile)
@@ -103,9 +117,18 @@ def freqToMarkov(freq):
     rowPos += 1
   return np.transpose(freq)
 
+def chordOctaveMarkov(octaves):
+  octMatr = np.zeros((64, 8))
+  for i in range(2, len(octaves)):
+    minusTwoOct = octaves[i - 2]
+    minusOneOct = octaves[i - 1]
+    octave = octaves[i]
+    octMatr[minusOneOct + 8 * minusTwoOct][octave] += 1
+  return octMatr
+
 
 def chordMarkov(notes):
-  chordMatr = np.zeros((144, 12))
+  chordMatr = np.zeros((144,12))
   for i in range(2, len(notes)):
     minusTwoNote = notes[i-2]
     minusOneNote = notes[i-1]
@@ -141,6 +164,7 @@ def randomPickVector(vector):
     randomNum -= vector[i][0]
     if (randomNum <= 0):
       return i
+  return random.randint(0, len(vector) - 1)
 
 def nextNorm(vectNot, vectOct, markovNot, markovOct):
   # List composition ([note, velocity])
@@ -168,8 +192,28 @@ def noteListToMidi(midiFileName, notes):
   newMidi.instruments.append(harpsichord)
   newMidi.write(midiFileName)
 
-def createMusChord(startNote1, startNote2):
-  return None
+def createMusChord(startNote1, startNote2, startOct1, startOct2, chordNotMarkov, chordOctMarkov):
+  noteList = [[startNote1, startOct1], [startNote2, startOct2]]
+  probVectorChordNot[startNote1 * 12 + startNote2][0] = 1
+  probVectorChordOct[startOct1 * 8 + startOct2][0] = 1
+  for i in range(199):
+    # print(noteList[i + 1][1])
+    noteList.append(nextChord(probVectorChordNot, probVectorChordOct, chordNotMarkov, chordOctMarkov, noteList[1 + i][0], noteList[1 + i][1]))
+  return noteList
 
-def nextChord():
-    return None
+def nextChord(vectChordNot, vectChordOct, markovChordNot, markovChordOct, lastNot, lastOct):
+  nextVectNot = np.matmul(markovChordNot, vectChordNot)
+  nextVectOct = np.matmul(markovChordOct, vectChordOct)
+  newNote = randomPickVector(nextVectNot)
+  newOct = randomPickVector(nextVectOct)
+  global probVectorChordNot
+  probVectorChordNot = np.zeros((144, 1))
+  for i in range(len(nextVectNot)):
+    noteProb = nextVectNot[i][0]
+    probVectorChordNot[lastNot * 12 + i][0] = noteProb
+  global probVectorChordOct
+  probVectorChordOct = np.zeros((64, 1))
+  for i in range(len(nextVectOct)):
+    octProb = nextVectNot[i][0] 
+    probVectorChordOct[lastOct * 8 + i][0] = octProb
+  return [newNote, newOct]
