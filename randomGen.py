@@ -1,3 +1,3 @@
 import fileConv
 
-fileConv.createChordMusic("output", "G#1", "C#2")
+fileConv.createChordMusic("output", "C5", "F5")

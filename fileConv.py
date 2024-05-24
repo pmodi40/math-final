@@ -3,9 +3,11 @@ import subprocess
 import contextlib
 import os
 
+'''
 with contextlib.redirect_stdout(None):
   # implement pip as a subprocess:
   subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
+'''
 
 import pretty_midi
 import random
@@ -71,6 +73,7 @@ def markov(files):
     firstOct = i
   markovNot = freqToMarkov(markovNot)
   markovChord = freqToMarkov(chordMarkov(allNotes))
+  print(markovChord)
   markovChordOctave = freqToMarkov(chordOctaveMarkov(allOctaves))
   markovOct = freqToMarkov(markovOct)
   return [markovNot, markovChord, markovOct, markovChordOctave]  
@@ -182,12 +185,15 @@ def nextNorm(vectNot, vectOct, markovNot, markovOct):
 
 def noteListToMidi(midiFileName, notes):
   newMidi = pretty_midi.PrettyMIDI()
-  harpsichordProgram = pretty_midi.instrument_name_to_program("Harpsichord")
+  harpsichordProgram = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
   harpsichord = pretty_midi.Instrument(program=harpsichordProgram)
+  curTime = 0
   for i in range(0, len(notes)):
     accNote = str(NotesList[notes[i][0]]) + str(notes[i][1])
     pitchNum = pretty_midi.note_name_to_number(accNote)
-    note = pretty_midi.Note(velocity=100, pitch = pitchNum, start = 0.5 * i, end = 0.5 * (i + 1))
+    dur = random.random() / 9 + 0.1
+    note = pretty_midi.Note(velocity=100, pitch = pitchNum, start = curTime, end = curTime + dur - 0.15)
+    curTime += dur
     harpsichord.notes.append(note)
   newMidi.instruments.append(harpsichord)
   newMidi.write(midiFileName)
@@ -196,7 +202,7 @@ def createMusChord(startNote1, startNote2, startOct1, startOct2, chordNotMarkov,
   noteList = [[startNote1, startOct1], [startNote2, startOct2]]
   probVectorChordNot[startNote1 * 12 + startNote2][0] = 1
   probVectorChordOct[startOct1 * 8 + startOct2][0] = 1
-  for i in range(199):
+  for i in range(299):
     # print(noteList[i + 1][1])
     noteList.append(nextChord(probVectorChordNot, probVectorChordOct, chordNotMarkov, chordOctMarkov, noteList[1 + i][0], noteList[1 + i][1]))
   return noteList
