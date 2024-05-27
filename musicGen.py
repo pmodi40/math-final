@@ -1,24 +1,20 @@
-import sys
-import subprocess
-import contextlib
-import os
+# Pranjal Modi: musicGen Class
+# Includes all the methods used to generate new "Bach-inspired" pieces of music
 
-'''
-with contextlib.redirect_stdout(None):
-  # implement pip as a subprocess:
-  subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pretty_midi'])
-'''
+# Import Statements: These load in all of the modules that'll be critical to the functioning of this class later on.
+import os # Used to parse through the music directory for midi files.
+import pretty_midi # Used to convert the midi files into program-parsable code.
+import random # Used to take advantage of probability vectors in the Markov Chain.
+import numpy as np # Used to load in and manipulate matrices.
 
-import pretty_midi
-import random
-import numpy as np
-
+# Initialization for several key global variables: the supported notes list, and all probability vectors.
 NotesList = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 probVectorNot = np.zeros((12, 1))
 probVectorOct = np.zeros((8, 1))
 probVectorChordNot = np.zeros((144, 1))
 probVectorChordOct = np.zeros((64, 1))
 
+# Converts double lists of the format [[directory, file], ...] into lists of the format ["filePath/fileName", ...]
 def collapse(dubList):
     music = []
     for i in dubList:
@@ -27,22 +23,26 @@ def collapse(dubList):
             music.append(adder + "/" + i[j])
     return music
 
+# Goes through the music directory and creates a double list of the format [[directory, file], ...]
 musicList = []
 for (dir, dir_name, file) in os.walk("music"):
     musicList.append([dir] + file)
+
+# Converts this double list into a list of relevant file paths.
 musicList = collapse(musicList)
 
 def createNormMusic(fileName, startNoteOct):
+  # Given a file name and starting note-octave combo (of the form "NoteNameOctaveName", such as "C#5"), creates a music piece of 300 total notes, solely using a note-by-note Markov Chain.
   startOct = int(startNoteOct[-1])
   startNot = find(startNoteOct[0:len(startNoteOct) - 1], NotesList)
   allMarkovs = markov(musicList)
   markovNot = allMarkovs[0]
   markovOct = allMarkovs[2]
   allNotes = createMusNorm(startNot, startOct, markovNot, markovOct)
-  # print(allNotes)
   noteListToMidi(fileName + ".mid", allNotes)
 
 def createChordMusic(fileName, startNoteOct1, startNoteOct2):
+  # Given a file name and a starting two note-octave combos (i.e. "C#4" and "D5"), creates a music piece of 301 total notes, using a two-note chord-based Markov Chain.
   startOct1 = int(startNoteOct1[-1])
   startNot1 = find(startNoteOct1[0:len(startNoteOct1) - 1], NotesList)
   startOct2 = int(startNoteOct2[-1])
@@ -54,7 +54,7 @@ def createChordMusic(fileName, startNoteOct1, startNoteOct2):
   noteListToMidi(fileName + ".mid", allNotes)
 
 def markov(files):
-  # Could always just pre-build the notes you take, exclude the rest for standardization
+  # Given a list of files, returns four Markov Chains associated with it: the first-order note and octave chains, and the second-order note and octave chains.
   markovNot = np.zeros((12,12))
   markovOct = np.zeros((8,8))
   allData = []
@@ -68,17 +68,16 @@ def markov(files):
     firstNote = i
   firstOct = allOctaves[0]
   for i in allOctaves[1:]:
-    # print([firstOct, i])
     markovOct[firstOct][i] += 1
     firstOct = i
   markovNot = freqToMarkov(markovNot)
   markovChord = freqToMarkov(chordMarkov(allNotes))
-  print(markovChord)
   markovChordOctave = freqToMarkov(chordOctaveMarkov(allOctaves))
   markovOct = freqToMarkov(markovOct)
   return [markovNot, markovChord, markovOct, markovChordOctave]  
 
 def genData(midiFile):
+  # Returns a double list of notes and octaves of the format [[note, octave], ...] given a midi file
   midi_data = pretty_midi.PrettyMIDI(midiFile)
   tempo = midi_data.estimate_tempo()
   notesCol = []
@@ -93,6 +92,7 @@ def genData(midiFile):
   return notesCol
       
 def listTripInd(list, ind):
+  # Loops within a triple-nested list to find every item with a particular index in the most nested component
   arr = []
   for i in list:
       for j in i:
@@ -100,6 +100,7 @@ def listTripInd(list, ind):
   return arr
 
 def find(desid, within):
+  # Returns the index of "within" inside the collection "desid"
   for i in range(0, len(within)):
     if within[i] == desid:
       return i
@@ -107,6 +108,7 @@ def find(desid, within):
 
 
 def freqToMarkov(freq):
+  # Converts a frequency matrix into a column-stochastic matrix
   rowPos = 0
   while rowPos < len(freq):
     sum = 0
@@ -121,6 +123,7 @@ def freqToMarkov(freq):
   return np.transpose(freq)
 
 def chordOctaveMarkov(octaves):
+  # Creates the second-order column-stochastic matrix for octaves
   octMatr = np.zeros((64, 8))
   for i in range(2, len(octaves)):
     minusTwoOct = octaves[i - 2]
@@ -131,6 +134,7 @@ def chordOctaveMarkov(octaves):
 
 
 def chordMarkov(notes):
+  # Creates the second-order column-stochastic matrix for notes
   chordMatr = np.zeros((144,12))
   for i in range(2, len(notes)):
     minusTwoNote = notes[i-2]
@@ -139,29 +143,17 @@ def chordMarkov(notes):
     chordMatr[minusOneNote + 12 * minusTwoNote][note] += 1
   return chordMatr
 
-'''
-LEGACY CODE
-def findLargestInd(vector):
-  largestCur = -1
-  largestInd = -1
-  for i in range(0, len(vector)):
-    curEntry = vector[i][0]
-    if (curEntry > largestCur):
-      largestCur = curEntry
-      largestInd = i
-  return largestInd
-'''
-
 def createMusNorm(startNote, startOct, markovNot, markovOct):
+  # Creates a nested list of the form [[note, octave], ...] that represents the entire generated music piece with the first-order Markov chains
   probVectorNot[startNote] = 1
   probVectorOct[startOct] = 1
   noteList = [[startNote, startOct]]
   for i in range(199):
-    # print(probVectorNot)
     noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
   return noteList
 
 def randomPickVector(vector):
+  # Given a stochastic vector, return a probability-weighted index (i.e. "randomly" chosen with the weights). If the stochastic vector is insufficient, return a random valid index.
   randomNum = random.random()
   for i in range(len(vector)):
     randomNum -= vector[i][0]
@@ -170,11 +162,9 @@ def randomPickVector(vector):
   return random.randint(0, len(vector) - 1)
 
 def nextNorm(vectNot, vectOct, markovNot, markovOct):
-  # List composition ([note, velocity])
+  # Determines the next note-octave combo using the first-order Markov chain
   nextVectNot = np.matmul(markovNot, vectNot)
-  # print(nextVectNot)
   nextVectOct = np.matmul(markovOct, vectOct)
-  # print(nextVectOct)
   newNote = randomPickVector(nextVectNot)
   newOct = randomPickVector(nextVectOct)
   global probVectorNot
@@ -184,6 +174,7 @@ def nextNorm(vectNot, vectOct, markovNot, markovOct):
   return [newNote, newOct]
 
 def noteListToMidi(midiFileName, notes):
+  # Converts a nested list of the form [[note, octave], ...] into a midi file called midiFileName, which is produce in the directory.
   newMidi = pretty_midi.PrettyMIDI()
   harpsichordProgram = pretty_midi.instrument_name_to_program("Acoustic Grand Piano")
   harpsichord = pretty_midi.Instrument(program=harpsichordProgram)
@@ -199,15 +190,16 @@ def noteListToMidi(midiFileName, notes):
   newMidi.write(midiFileName)
 
 def createMusChord(startNote1, startNote2, startOct1, startOct2, chordNotMarkov, chordOctMarkov):
+  # Creates a nested list of the form [[note, octave], ...] that represents the entire generated music piece with the second-order Markov chains
   noteList = [[startNote1, startOct1], [startNote2, startOct2]]
   probVectorChordNot[startNote1 * 12 + startNote2][0] = 1
   probVectorChordOct[startOct1 * 8 + startOct2][0] = 1
   for i in range(299):
-    # print(noteList[i + 1][1])
     noteList.append(nextChord(probVectorChordNot, probVectorChordOct, chordNotMarkov, chordOctMarkov, noteList[1 + i][0], noteList[1 + i][1]))
   return noteList
 
 def nextChord(vectChordNot, vectChordOct, markovChordNot, markovChordOct, lastNot, lastOct):
+  # Determines the next note-octave combo using the second-order Markov chain for chords
   nextVectNot = np.matmul(markovChordNot, vectChordNot)
   nextVectOct = np.matmul(markovChordOct, vectChordOct)
   newNote = randomPickVector(nextVectNot)
