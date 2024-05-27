@@ -84,6 +84,7 @@ def genData(midiFile):
   for i in midi_data.instruments:
     for j in i.notes:
       note = pretty_midi.note_number_to_name(j.pitch)
+      print(note)
       octave = note[-1]
       note = note[0:len(note) - 1]
       if note[-1] == "!" or note[-1] == "b":
@@ -215,3 +216,6 @@ def nextChord(vectChordNot, vectChordOct, markovChordNot, markovChordOct, lastNo
     octProb = nextVectNot[i][0] 
     probVectorChordOct[lastOct * 8 + i][0] = octProb
   return [newNote, newOct]
+
+for i in musicList:
+  genData(i)
