@@ -1,6 +1,8 @@
 # Using Markov Chains to Generate Bach Music
 **Note that the pretty_midi and numpy libraries are *required* to run this program. These libraries can be installed with the terminal commands `pip install pretty_midi` and `pip install numpy`, respectively.**
 
+---
+
 To create music of your own with a first-order Markov Chain, run the command:
 `python3 Driver.py F fileName firstNoteOctaveCombo`
 
