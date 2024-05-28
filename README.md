@@ -4,7 +4,13 @@
 To create music of your own with a first-order Markov Chain, run the command:
 `python3 Driver.py F fileName firstNoteOctaveCombo`
 
-To create music of your own with a second-order Markov Chain, run the command:
+As an example, the command `python3 Driver.py F output C4` would produce a midi file named `output.mid` with a starting note of `C` and a starting octave of `4`.
+
+---
+
+To create music of your own with a second-order Markov Chain (*generally* more cohesive), run the command:
 `python3 Driver.py S fileName firstNoteOctaveCombo secondNoteOctaveCombo`
 
-Leave out the extension when choosing a fileName, and note that the Note-Octave combos must be formatted like this: `C5`, `D#2`, etc. Octaves go from one to eight, and valid notes can be found in this list `[C, C#, D, D#, E, F, F#, G, G#, A, A#, B]`.
+As an example, the command `python3 Driver.py S output C3 D#3` would create a midi file named `output.mid` with starting notes of `C` and `D#` and starting octaves of `3` and `3`, using the second-order stochastic matrices.
+
+**Leave out the extension when choosing a fileName**, and note that the Note-Octave combos must be formatted like this: `C5`, `D#2`, etc. Octaves go from one to eight, and valid notes can be found in this list `[C, C#, D, D#, E, F, F#, G, G#, A, A#, B]`.
