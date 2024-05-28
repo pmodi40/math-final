@@ -1,6 +1,8 @@
 # Using Markov Chains to Generate Bach Music
 **Note that the pretty_midi and numpy libraries are *required* to run this program. These libraries can be installed with the terminal commands `pip install pretty_midi` and `pip install numpy`, respectively.**
 
+To clone this repository, use the command `git clone git@github.com:pmodi40/math-final.git` in your directory of choice; be sure to properly initialize git on your machine first, using the guides at https://docs.github.com/en/get-started/getting-started-with-git/set-up-git and https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent.
+
 ---
 
 To create music of your own with a first-order Markov Chain, run the command:
