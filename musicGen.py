@@ -3,7 +3,7 @@
 
 # Import Statements: These load in all of the modules that'll be critical to the functioning of this class later on.
 import os # Used to parse through the music directory for midi files.
-import pretty_midi # Used to convert the midi files into program-parsable code.
+# import pretty_midi # Used to convert the midi files into program-parsable code.
 import random # Used to take advantage of probability vectors in the Markov Chain.
 import numpy as np # Used to load in and manipulate matrices.
 
