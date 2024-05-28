@@ -3,7 +3,7 @@
 
 # Import Statements: These load in all of the modules that'll be critical to the functioning of this class later on.
 import os # Used to parse through the music directory for midi files.
-# import pretty_midi # Used to convert the midi files into program-parsable code.
+import pretty_midi # Used to convert the midi files into program-parsable code.
 import random # Used to take advantage of probability vectors in the Markov Chain.
 import numpy as np # Used to load in and manipulate matrices.
 
@@ -13,6 +13,9 @@ probVectorNot = np.zeros((12, 1))
 probVectorOct = np.zeros((8, 1))
 probVectorChordNot = np.zeros((144, 1))
 probVectorChordOct = np.zeros((64, 1))
+
+"""
+Legacy Code: Files have already been loaded in to generate the premade stochastic matrices.
 
 # Converts double lists of the format [[directory, file], ...] into lists of the format ["filePath/fileName", ...]
 def collapse(dubList):
@@ -30,6 +33,7 @@ for (dir, dir_name, file) in os.walk("music"):
 
 # Converts this double list into a list of relevant file paths.
 musicList = collapse(musicList)
+"""
 
 def createNormMusic(fileName, startNoteOct):
   # Given a file name and starting note-octave combo (of the form "NoteNameOctaveName", such as "C#5"), creates a music piece of 300 total notes, solely using a note-by-note Markov Chain.
@@ -141,7 +145,6 @@ def chordOctaveMarkov(octaves):
     octMatr[minusOneOct + 8 * minusTwoOct][octave] += 1
   return octMatr
 
-
 def chordMarkov(notes):
   # Creates the second-order column-stochastic matrix for notes
   chordMatr = np.zeros((144,12))
@@ -159,6 +162,8 @@ def createMusNorm(startNote, startOct, markovNot, markovOct):
   noteList = [[startNote, startOct]]
   for i in range(199):
     noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
+    print(probVectorNot)
+    print(probVectorOct)
   return noteList
 
 def randomPickVector(vector):
