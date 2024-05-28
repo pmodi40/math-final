@@ -39,7 +39,7 @@ def createNormMusic(fileName, startNoteOct):
   # Given a file name and starting note-octave combo (of the form "NoteNameOctaveName", such as "C#5"), creates a music piece of 300 total notes, solely using a note-by-note Markov Chain.
   startOct = int(startNoteOct[-1])
   startNot = find(startNoteOct[0:len(startNoteOct) - 1], NotesList)
-  allMarkovs = markov(musicList)
+  allMarkovs = markov()
   markovNot = allMarkovs[0]
   markovOct = allMarkovs[2]
   allNotes = createMusNorm(startNot, startOct, markovNot, markovOct)
@@ -51,13 +51,13 @@ def createChordMusic(fileName, startNoteOct1, startNoteOct2):
   startNot1 = find(startNoteOct1[0:len(startNoteOct1) - 1], NotesList)
   startOct2 = int(startNoteOct2[-1])
   startNot2 = find(startNoteOct2[0:len(startNoteOct2) - 1], NotesList)
-  allMarkovs = markov(musicList)
+  allMarkovs = markov()
   markovChordNot = allMarkovs[1]
   markovChordOct = allMarkovs[3]
   allNotes = createMusChord(startNot1, startNot2, startOct1, startOct2, markovChordNot, markovChordOct)
   noteListToMidi(fileName + ".mid", allNotes)
 
-def markov(files):
+def markov():
   # Returns markov chains associated with the corpus
   """
   # Legacy Code: Built to handle a list of files, rather than premade text-based matrices
@@ -162,8 +162,6 @@ def createMusNorm(startNote, startOct, markovNot, markovOct):
   noteList = [[startNote, startOct]]
   for i in range(199):
     noteList.append(nextNorm(probVectorNot, probVectorOct, markovNot, markovOct))
-    print(probVectorNot)
-    print(probVectorOct)
   return noteList
 
 def randomPickVector(vector):
