@@ -71,9 +71,13 @@ def markov(files):
     markovOct[firstOct][i] += 1
     firstOct = i
   markovNot = freqToMarkov(markovNot)
+  markovNot.tofile("stochastics/markovNot.txt")
   markovChord = freqToMarkov(chordMarkov(allNotes))
+  markovChord.tofile("stochastics/markovChord.txt")
   markovChordOctave = freqToMarkov(chordOctaveMarkov(allOctaves))
+  markovChordOctave.tofile("stochastics/markovChordOctave.txt")
   markovOct = freqToMarkov(markovOct)
+  markovOct.tofile("stochastics/markovOct.txt")
   return [markovNot, markovChord, markovOct, markovChordOctave]  
 
 def genData(midiFile):
