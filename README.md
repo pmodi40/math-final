@@ -3,6 +3,8 @@
 
 To clone this repository, use the command `git clone "git@github.com:pmodi40/math-final.git"` in your directory of choice; be sure to properly initialize git on your machine first, using the guides at https://docs.github.com/en/get-started/getting-started-with-git/set-up-git and https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent.
 
+**Alternatively, just navigate to the "Code" dropdown on the main page of the repository and click on the "Download ZIP" option to receive all of the repository's contents without any setup.**
+
 ---
 
 To create music of your own with a first-order Markov Chain, run the command:
