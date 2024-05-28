@@ -58,7 +58,7 @@ def createChordMusic(fileName, startNoteOct1, startNoteOct2):
   noteListToMidi(fileName + ".mid", allNotes)
 
 def markov():
-  # Returns markov chains associated with the corpus
+  # Returns markov chains associated with the corpus (parameter "files" has been removed, can be readded if legacy code needs to be used)
   """
   # Legacy Code: Built to handle a list of files, rather than premade text-based matrices
 
