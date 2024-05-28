@@ -3,7 +3,7 @@
 
 # Import Statements: These load in all of the modules that'll be critical to the functioning of this class later on.
 import os # Used to parse through the music directory for midi files.
-import pretty_midi # Used to convert the midi files into program-parsable code.
+# import pretty_midi # Used to convert the midi files into program-parsable code.
 import random # Used to take advantage of probability vectors in the Markov Chain.
 import numpy as np # Used to load in and manipulate matrices.
 
@@ -54,7 +54,11 @@ def createChordMusic(fileName, startNoteOct1, startNoteOct2):
   noteListToMidi(fileName + ".mid", allNotes)
 
 def markov(files):
-  # Given a list of files, returns four Markov Chains associated with it: the first-order note and octave chains, and the second-order note and octave chains.
+  # Returns markov chains associated with the corpus
+
+  """
+  Legacy Code: Built to handle a list of files, rather than premade text-based matrices
+
   markovNot = np.zeros((12,12))
   markovOct = np.zeros((8,8))
   allData = []
@@ -71,14 +75,12 @@ def markov(files):
     markovOct[firstOct][i] += 1
     firstOct = i
   markovNot = freqToMarkov(markovNot)
-  markovNot.tofile("stochastics/markovNot.txt")
   markovChord = freqToMarkov(chordMarkov(allNotes))
-  markovChord.tofile("stochastics/markovChord.txt")
   markovChordOctave = freqToMarkov(chordOctaveMarkov(allOctaves))
-  markovChordOctave.tofile("stochastics/markovChordOctave.txt")
   markovOct = freqToMarkov(markovOct)
-  markovOct.tofile("stochastics/markovOct.txt")
-  return [markovNot, markovChord, markovOct, markovChordOctave]  
+  return [markovNot, markovChord, markovOct, markovChordOctave]
+  """
+  return [np.fromfile("stochastics/markovNot.txt"), np.fromfile("stochastics/markovChord.txt"), np.fromfile("stochastics/markovOct.txt"), np.fromfile("stochastics/markovChordOctave.txt")]
 
 def genData(midiFile):
   # Returns a double list of notes and octaves of the format [[note, octave], ...] given a midi file
