@@ -55,8 +55,6 @@ def createChordMusic(fileName, startNoteOct1, startNoteOct2):
 
 def markov(files):
   # Returns markov chains associated with the corpus
-
-  """
   Legacy Code: Built to handle a list of files, rather than premade text-based matrices
 
   markovNot = np.zeros((12,12))
@@ -75,12 +73,14 @@ def markov(files):
     markovOct[firstOct][i] += 1
     firstOct = i
   markovNot = freqToMarkov(markovNot)
+  np.save("stochastics/markovNot.npy", markovNot)
   markovChord = freqToMarkov(chordMarkov(allNotes))
+  np.save("stochastics/markovChord.npy", markovChord)
   markovChordOctave = freqToMarkov(chordOctaveMarkov(allOctaves))
+  np.save("stochastics/markovChordOctave.npy", markovChordOctave)
   markovOct = freqToMarkov(markovOct)
+  np.save("stochastics/markovOct.npy", markovOct)
   return [markovNot, markovChord, markovOct, markovChordOctave]
-  """
-  return [np.fromfile("stochastics/markovNot.txt"), np.fromfile("stochastics/markovChord.txt"), np.fromfile("stochastics/markovOct.txt"), np.fromfile("stochastics/markovChordOctave.txt")]
 
 def genData(midiFile):
   # Returns a double list of notes and octaves of the format [[note, octave], ...] given a midi file
